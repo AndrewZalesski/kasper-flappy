@@ -18,11 +18,11 @@ let score = 0;
 
 // Load assets
 const kasper = new Image();
-kasper.src = 'assets/kasperghostflappy.png';
+kasper.src = 'static/assets/kasperghostflappy.png';  // Ensure assets path is correct
 
-const flapSound = new Audio('assets/flap.wav');
-const gameOverSound = new Audio('assets/gameover.wav');
-const bgMusic = new Audio('assets/background.mp3');
+const flapSound = new Audio('static/assets/flap.wav');
+const gameOverSound = new Audio('static/assets/gameover.wav');
+const bgMusic = new Audio('static/assets/background.mp3');
 bgMusic.loop = true;
 
 let kasperX = canvas.width / 10;
@@ -38,7 +38,7 @@ let pipeSpeed = 2;
 
 // Handle wallet form submission without refreshing the page
 document.getElementById('walletForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+    event.preventDefault();  // Prevent page refresh
     walletAddress = document.getElementById('walletAddress').value;
     if (walletAddress) {
         document.getElementById('walletForm').classList.add('hidden');
