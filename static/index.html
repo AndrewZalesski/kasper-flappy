@@ -9,25 +9,31 @@
 </head>
 <body>
     <div id="gameContainer">
-        <canvas id="gameCanvas"></canvas>
-        
+        <!-- Wallet Form -->
         <form id="walletForm">
             <h1>Enter your Kaspa Wallet Address</h1>
             <input type="text" id="walletAddress" placeholder="kaspa:...">
             <button type="submit">Submit</button>
         </form>
         
+        <!-- Start Game Screen -->
         <div id="playScreen" class="hidden">
             <button id="startGameButton">Start Game</button>
         </div>
+
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas" class="hidden"></canvas>
         
+        <!-- Score Display -->
         <div id="scoreDisplay" class="hidden">Score: 0</div>
 
+        <!-- Leaderboard -->
         <div id="leaderboard" class="hidden">
             <h2>Leaderboard</h2>
             <ul id="leaderboardList"></ul>
         </div>
 
+        <!-- Play Again Button -->
         <button id="playAgainButton" class="hidden">Play Again</button>
     </div>
 
