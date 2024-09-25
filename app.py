@@ -1,7 +1,7 @@
 
-from flask import Flask, request, jsonify
-import sqlite3
+from flask import Flask, request, jsonify, send_from_directory
 import os
+import sqlite3
 
 app = Flask(__name__)
 
@@ -53,6 +53,11 @@ def get_leaderboard():
     conn.close()
 
     return jsonify([dict(row) for row in leaderboard])
+
+# Route to serve the homepage
+@app.route('/')
+def home():
+    return send_from_directory('static', 'index.html')
 
 if __name__ == '__main__':
     # Run the app on Heroku's assigned port or 5000 locally
