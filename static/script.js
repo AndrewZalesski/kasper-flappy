@@ -42,9 +42,9 @@ let pipeSpeed = 2;
 let minPipeHeight = canvas.height / 8;  // Minimum pipe height to avoid tiny pipes
 let maxPipeHeight = canvas.height / 2;  // Maximum pipe height to avoid pipes blocking the screen
 
-// Improved validation for Kaspa address
+// Improved validation for Kaspa address to handle real valid addresses
 function isValidKaspaAddress(address) {
-    const regex = /^kaspa:[a-zA-Z0-9]{40,50}$/;
+    const regex = /^kaspa:[a-z0-9]{59}$/;
     return regex.test(address);
 }
 
