@@ -29,9 +29,6 @@ kasper.onerror = function() {
     console.error("Error: Kasper image failed to load!");
 };
 
-const flapSound = new Audio('assets/flap.wav');
-const gameOverSound = new Audio('assets/gameover.wav');
-
 let kasperX = canvas.width / 10;
 let kasperY = canvas.height / 2;
 let gravity = 0.08;
@@ -86,14 +83,12 @@ document.getElementById('startGameButton').addEventListener('click', function() 
 canvas.addEventListener('touchstart', function(e) {
     if (gameRunning) {
         velocity = lift;
-        flapSound.play();
     }
     e.preventDefault();
 });
 canvas.addEventListener('click', function() {
     if (gameRunning) {
         velocity = lift;
-        flapSound.play();
     }
 });
 
