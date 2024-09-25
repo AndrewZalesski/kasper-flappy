@@ -24,7 +24,7 @@ let pipes = [];
 let pipeWidth = 60;
 let pipeGap = 150;
 let pipeSpeed = 2;
-let leaderboardPage = 0;
+
 const leaderboardPageSize = 25;
 
 // Simulated high score data (for demonstration purposes)
