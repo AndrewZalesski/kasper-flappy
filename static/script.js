@@ -40,9 +40,10 @@ let pipeWidth = canvas.width / 10;
 let pipeGap = canvas.height / 3;
 let pipeSpeed = 2;
 
-// Validate Kaspa address
+// Validate Kaspa address with proper format
 function isValidKaspaAddress(address) {
-    return address.startsWith('kaspa:');
+    const regex = /^kaspa:[a-zA-Z0-9]{8,}$/;
+    return regex.test(address);
 }
 
 // Handle wallet form submission without refreshing the page
@@ -51,7 +52,7 @@ document.getElementById('walletForm').addEventListener('submit', function(event)
     walletAddress = document.getElementById('walletAddress').value;
 
     if (!isValidKaspaAddress(walletAddress)) {
-        alert('Please enter a valid Kaspa address starting with "kaspa:"');
+        alert('Please enter a valid Kaspa address starting with "kaspa:" and followed by letters and numbers.');
         return;
     }
 
@@ -131,7 +132,9 @@ function gameLoop() {
     kasperY += velocity;
 
     // Draw Kasper ghost on the canvas
-    ctx.drawImage(kasper, kasperX, kasperY, canvas.width / 10, canvas.height / 10);
+    
+ctx.drawImage(kasper, kasperX, kasperY, canvas.width / 10, canvas.height / 10);
+
 
     drawPipes();
 
