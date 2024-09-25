@@ -1,4 +1,3 @@
-
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -82,13 +81,13 @@ document.getElementById('startGameButton').addEventListener('click', function() 
 // Mobile and Desktop support
 canvas.addEventListener('touchstart', function(e) {
     if (gameRunning) {
-        velocity = lift;
+        velocity = lift;  // Trigger jump on touch
     }
     e.preventDefault();
 });
 canvas.addEventListener('click', function() {
     if (gameRunning) {
-        velocity = lift;
+        velocity = lift;  // Trigger jump on click
     }
 });
 
@@ -127,7 +126,7 @@ function startGame() {
     setInterval(generatePipes, 2500);
 }
 
-// Game loop with proper image loading and score tracking
+// Game loop with proper image loading, drawing, and jumping mechanics
 function gameLoop() {
     if (!gameRunning) return;
 
@@ -138,6 +137,13 @@ function gameLoop() {
 
     velocity += gravity;
     kasperY += velocity;
+
+    if (kasperY < 0) {
+        kasperY = 0;  // Prevent Kasper from flying off the top
+    } else if (kasperY + canvas.height / 10 > canvas.height) {
+        kasperY = canvas.height - canvas.height / 10;  // Prevent Kasper from falling off the bottom
+        endGame();  // End game if Kasper hits the ground
+    }
 
     if (kasperLoaded) {
         // Only draw Kasper when the image is fully loaded
