@@ -25,10 +25,10 @@ let pipeWidth = 60;
 let pipeGap = 150;
 let pipeSpeed = 2;
 
-const leaderboardPageSize = 25;
+
 
 // Simulated high score data (for demonstration purposes)
-let highScores = [
+
     { wallet: "kaspa:example1", score: 500 },
     { wallet: "kaspa:example2", score: 450 },
     // Additional dummy data for demo
@@ -144,6 +144,32 @@ function drawGame() {
 function endGame() {
     gameRunning = false;
     document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+    
+    // Submit score to backend
+    fetch('/submit_score', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            wallet_address: walletAddress,
+            score: score
+        })
+    }).then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showLeaderboard();
+        } else {
+            alert('Error submitting score: ' + data.message);
+        }
+    }).catch(error => {
+        alert('An error occurred while submitting the score: ' + error.message);
+    });
+
+    document.getElementById('playAgainButton').classList.remove('hidden');
+}
+    gameRunning = false;
+    document.getElementById('finalScore').textContent = `Final Score: ${score}`;
     showLeaderboard();
     document.getElementById('playAgainButton').classList.remove('hidden');
 }
@@ -252,6 +278,32 @@ document.getElementById('nextButton').addEventListener('click', function() {
 
 // Show the leaderboard at the end of the game
 function endGame() {
+    gameRunning = false;
+    document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+    
+    // Submit score to backend
+    fetch('/submit_score', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            wallet_address: walletAddress,
+            score: score
+        })
+    }).then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showLeaderboard();
+        } else {
+            alert('Error submitting score: ' + data.message);
+        }
+    }).catch(error => {
+        alert('An error occurred while submitting the score: ' + error.message);
+    });
+
+    document.getElementById('playAgainButton').classList.remove('hidden');
+}
     gameRunning = false;
     document.getElementById('finalScore').textContent = `Final Score: ${score}`;
     showLeaderboard();
