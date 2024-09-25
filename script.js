@@ -2,7 +2,6 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Fullscreen canvas and proportional resizing
 function resizeCanvas() {
   const width = window.innerWidth;
   const height = window.innerHeight;
@@ -43,20 +42,20 @@ let pipeSpeed = 2;
 
 let gameOver = false;
 
-// Ask the user for their wallet address and then show a "Start Game" button
+// Handle wallet form submission without refreshing the page
 document.getElementById('walletForm').addEventListener('submit', function(event) {
   event.preventDefault();
   walletAddress = document.getElementById('walletAddress').value;
   if (walletAddress) {
-    document.getElementById('playScreen').classList.remove('hidden');
     document.getElementById('walletForm').classList.add('hidden');
+    document.getElementById('playScreen').classList.remove('hidden');
   }
 });
 
-// Show game instructions and the "Start Game" button
+// Show the "Start Game" button after wallet submission
 document.getElementById('startGameButton').addEventListener('click', function() {
   document.getElementById('playScreen').classList.add('hidden');
-  document.getElementById('scoreDisplay').classList.remove('hidden');  // Show score
+  document.getElementById('scoreDisplay').classList.remove('hidden');  
   startGame();
 });
 
@@ -82,18 +81,17 @@ function drawPipes() {
     let pipe = pipes[i];
     pipe.x -= pipeSpeed;
 
-    ctx.fillStyle = "#228B22"; // Pipe color
+    ctx.fillStyle = "#228B22";
     ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
     ctx.fillRect(pipe.x, canvas.height - pipe.bottom, pipeWidth, pipe.bottom);
 
     if (pipe.x + pipeWidth < 0) {
       pipes.splice(i, 1);
-      score += 1;  // Increment score when pipe passes
+      score += 1;
     }
   }
 }
 
-// Generate pipes
 function generatePipes() {
   let top = Math.random() * (canvas.height / 2);
   let bottom = canvas.height - (top + pipeGap);
@@ -108,7 +106,7 @@ function startGame() {
   bgMusic.play();
   gameLoop();
   generatePipes();
-  setInterval(generatePipes, 2500);  // Generate pipes every 2.5 seconds
+  setInterval(generatePipes, 2500);
 }
 
 function gameLoop() {
@@ -116,33 +114,30 @@ function gameLoop() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // Draw background
   ctx.fillStyle = backgroundGradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Update and draw Kasper
   velocity += gravity;
   kasperY += velocity;
   ctx.drawImage(kasper, kasperX, kasperY, canvas.width / 10, canvas.height / 10);
 
-  // Draw pipes
   drawPipes();
 
-  // Update score display
   document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
 
   requestAnimationFrame(gameLoop);
 }
 
-function restartGame() {
-  gameOver = false;
+function endGame() {
+  gameOver = true;
   gameRunning = false;
   bgMusic.pause();
-  bgMusic.currentTime = 0;
-  document.getElementById('gameOver').classList.remove('hidden');
+  submitScore();
+  document.getElementById('leaderboard').classList.remove('hidden');
+  document.getElementById('playAgainButton').classList.remove('hidden');
 }
 
-// Submit the score and show the leaderboard after the game ends
+// Submit the score to the leaderboard at the end of the game
 function submitScore() {
   if (!walletAddress) return;
 
@@ -181,6 +176,12 @@ function fetchLeaderboard() {
         listItem.textContent = `Wallet: ${entry.wallet_address} - Score: ${entry.score}`;
         leaderboardList.appendChild(listItem);
       });
-      document.getElementById('leaderboard').classList.remove('hidden');
     });
 }
+
+// Handle "Play Again" button to restart the game
+document.getElementById('playAgainButton').addEventListener('click', function() {
+  document.getElementById('leaderboard').classList.add('hidden');
+  document.getElementById('playAgainButton').classList.add('hidden');
+  startGame();
+});
