@@ -32,9 +32,9 @@ kasper.onload = function() {
     console.log("Kasper image loaded successfully");
 };
 
-// Simplified wallet validation: Only check character count (65 characters)
+// Updated wallet validation: Check for exactly 67 characters
 function isValidKaspaAddress(address) {
-    return address.length === 65;  // Only check character length
+    return address.length === 67;  // Only check character length
 }
 
 // Handle form submission for wallet
@@ -42,7 +42,7 @@ document.getElementById('walletForm').addEventListener('submit', function(event)
     event.preventDefault();
     walletAddress = document.getElementById('walletAddress').value;
     if (!isValidKaspaAddress(walletAddress)) {
-        alert('Invalid wallet address. Must be exactly 65 characters long.');
+        alert('Invalid wallet address. Must be exactly 67 characters long.');
         return;
     }
     // Fetch high score (simulated)
