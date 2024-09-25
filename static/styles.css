@@ -92,3 +92,49 @@ button {
         font-size: 14px;
     }
 }
+
+#leaderboard {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+}
+
+#leaderboard div {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+#leaderboard div:last-child {
+    border-bottom: none;
+}
+
+#prevButton, #nextButton, #playAgainButton {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    background-color: #29b6f6;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#prevButton:hover, #nextButton:hover, #playAgainButton:hover {
+    background-color: #0288d1;
+}
+
+#prevButton:disabled, #nextButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#finalScore {
+    font-size: 24px;
+    margin-bottom: 20px;
+}

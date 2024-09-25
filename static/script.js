@@ -199,3 +199,61 @@ canvas.addEventListener('click', function() {
 canvas.addEventListener('touchstart', function() {
     if (gameRunning) velocity = lift;
 });
+
+// Leaderboard functionality and pagination
+
+let leaderboardPage = 0;
+const leaderboardPageSize = 25;
+
+// Simulated high score data for testing
+let highScores = [
+    { wallet: "kaspa:example1", score: 500 },
+    { wallet: "kaspa:example2", score: 450 },
+    { wallet: "kaspa:example3", score: 400 },
+    // Additional dummy data for demo
+    // Fill more to test pagination if needed
+];
+
+// Function to show the leaderboard at the end of the game
+function showLeaderboard() {
+    const start = leaderboardPage * leaderboardPageSize;
+    const end = start + leaderboardPageSize;
+    const currentPageScores = highScores.slice(start, end);
+
+    const leaderboardElement = document.getElementById('leaderboard');
+    leaderboardElement.innerHTML = '';  // Clear previous content
+
+    currentPageScores.forEach(entry => {
+        const entryElement = document.createElement('div');
+        entryElement.textContent = `${entry.wallet}: ${entry.score}`;
+        leaderboardElement.appendChild(entryElement);
+    });
+
+    // Update navigation buttons
+    document.getElementById('prevButton').style.display = leaderboardPage > 0 ? 'inline' : 'none';
+    document.getElementById('nextButton').style.display = end < highScores.length ? 'inline' : 'none';
+}
+
+// Navigate to the previous page of the leaderboard
+document.getElementById('prevButton').addEventListener('click', function() {
+    if (leaderboardPage > 0) {
+        leaderboardPage--;
+        showLeaderboard();
+    }
+});
+
+// Navigate to the next page of the leaderboard
+document.getElementById('nextButton').addEventListener('click', function() {
+    if ((leaderboardPage + 1) * leaderboardPageSize < highScores.length) {
+        leaderboardPage++;
+        showLeaderboard();
+    }
+});
+
+// Show the leaderboard at the end of the game
+function endGame() {
+    gameRunning = false;
+    document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+    showLeaderboard();
+    document.getElementById('playAgainButton').classList.remove('hidden');
+}
