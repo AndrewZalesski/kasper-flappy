@@ -24,6 +24,10 @@ kasper.onload = function() {
     console.log("Kasper image loaded successfully");
 };
 
+kasper.onerror = function() {
+    console.error("Error: Kasper image not found or failed to load!");
+};
+
 const flapSound = new Audio('assets/flap.wav');
 const gameOverSound = new Audio('assets/gameover.wav');
 const bgMusic = new Audio('assets/background_quieter.wav');  // Use quieter background music
@@ -119,7 +123,7 @@ function startGame() {
     setInterval(generatePipes, 2500);
 }
 
-// Game loop
+// Game loop with console log to ensure drawImage is called
 function gameLoop() {
     if (!gameRunning) return;
 
@@ -131,10 +135,9 @@ function gameLoop() {
     velocity += gravity;
     kasperY += velocity;
 
-    // Draw Kasper ghost on the canvas
-    
-ctx.drawImage(kasper, kasperX, kasperY, canvas.width / 10, canvas.height / 10);
-
+    // Check if the ghost is being drawn correctly
+    console.log("Drawing Kasper at X:", kasperX, "Y:", kasperY);
+    ctx.drawImage(kasper, kasperX, kasperY, canvas.width / 10, canvas.height / 10);
 
     drawPipes();
 
