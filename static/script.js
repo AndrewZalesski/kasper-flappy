@@ -15,23 +15,22 @@ resizeCanvas();
 let gameRunning = false;
 let walletAddress = '';
 let score = 0;
+let highScore = 0;  // Initial high score
 
-// Load assets from the root assets folder
+// Preload the Kasper ghost image before starting the game
+let kasperLoaded = false;
 const kasper = new Image();
 kasper.src = 'assets/kasperghostflappy.png';  // Ensure correct path for ghost image
-
 kasper.onload = function() {
+    kasperLoaded = true;
     console.log("Kasper image loaded successfully");
 };
-
 kasper.onerror = function() {
-    console.error("Error: Kasper image not found or failed to load!");
+    console.error("Error: Kasper image failed to load!");
 };
 
 const flapSound = new Audio('assets/flap.wav');
 const gameOverSound = new Audio('assets/gameover.wav');
-const bgMusic = new Audio('assets/background_quieter.wav');  // Use quieter background music
-bgMusic.loop = true;
 
 let kasperX = canvas.width / 10;
 let kasperY = canvas.height / 2;
@@ -43,6 +42,8 @@ let pipes = [];
 let pipeWidth = canvas.width / 10;
 let pipeGap = canvas.height / 3;
 let pipeSpeed = 2;
+let minPipeHeight = canvas.height / 8;  // Minimum pipe height to avoid tiny pipes
+let maxPipeHeight = canvas.height / 2;  // Maximum pipe height to avoid pipes blocking the screen
 
 // Validate Kaspa address with proper format
 function isValidKaspaAddress(address) {
@@ -60,8 +61,17 @@ document.getElementById('walletForm').addEventListener('submit', function(event)
         return;
     }
 
-    document.getElementById('walletForm').classList.add('hidden');
-    document.getElementById('playScreen').classList.remove('hidden');
+    // Fetch the high score for the wallet address
+    fetch(`https://kasper-flappy.herokuapp.com/get_highscore?wallet_address=${walletAddress}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.highScore) {
+                highScore = data.highScore;  // Set the high score if it exists
+            }
+            document.getElementById('walletForm').classList.add('hidden');
+            document.getElementById('playScreen').classList.remove('hidden');
+        })
+        .catch(error => console.error('Error fetching high score:', error));
 });
 
 // Show the "Start Game" button after wallet submission
@@ -87,7 +97,7 @@ canvas.addEventListener('click', function() {
     }
 });
 
-// Draw pipes
+// Draw pipes with fixed sizes
 function drawPipes() {
     for (let i = 0; i < pipes.length; i++) {
         let pipe = pipes[i];
@@ -104,9 +114,9 @@ function drawPipes() {
     }
 }
 
-// Generate pipes at intervals
+// Generate pipes with fixed minimum and maximum sizes
 function generatePipes() {
-    let top = Math.random() * (canvas.height / 2);
+    let top = minPipeHeight + Math.random() * (maxPipeHeight - minPipeHeight);
     let bottom = canvas.height - (top + pipeGap);
     pipes.push({x: canvas.width, top: top, bottom: bottom});
 }
@@ -117,13 +127,12 @@ function startGame() {
     pipes = [];
     score = 0;
     gameRunning = true;
-    bgMusic.play();
     gameLoop();
     generatePipes();
     setInterval(generatePipes, 2500);
 }
 
-// Game loop with console log to ensure drawImage is called
+// Game loop with proper image loading and score tracking
 function gameLoop() {
     if (!gameRunning) return;
 
@@ -135,14 +144,18 @@ function gameLoop() {
     velocity += gravity;
     kasperY += velocity;
 
-    // Check if the ghost is being drawn correctly
-    console.log("Drawing Kasper at X:", kasperX, "Y:", kasperY);
-    ctx.drawImage(kasper, kasperX, kasperY, canvas.width / 10, canvas.height / 10);
+    if (kasperLoaded) {
+        // Only draw Kasper when the image is fully loaded
+        ctx.drawImage(kasper, kasperX, kasperY, canvas.width / 10, canvas.height / 10);
+    }
 
     drawPipes();
 
-    // Display and update score during gameplay
-    document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
+    // Display and update score and high score during gameplay
+    ctx.fillStyle = "#000";
+    ctx.font = "24px Arial";
+    ctx.fillText(`Score: ${score}`, 10, 30);  // Display current score at top left
+    ctx.fillText(`High Score: ${highScore}`, canvas.width - 150, 30);  // Display high score at top right
 
     requestAnimationFrame(gameLoop);
 }
@@ -150,10 +163,21 @@ function gameLoop() {
 // End the game and display the leaderboard
 function endGame() {
     gameRunning = false;
-    bgMusic.pause();
-    submitScore();
-    document.getElementById('leaderboard').classList.remove('hidden');
-    document.getElementById('playAgainButton').classList.remove('hidden');
+    highScore = Math.max(score, highScore);  // Update high score if current score is higher
+
+    // Save the new high score for the wallet address
+    fetch('https://kasper-flappy.herokuapp.com/save_highscore', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            wallet_address: walletAddress,
+            high_score: highScore
+        }),
+    })
+    .then(() => submitScore())
+    .catch(error => console.error('Error saving high score:', error));
 }
 
 // Submit the score to the leaderboard
