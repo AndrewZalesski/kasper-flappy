@@ -18,7 +18,7 @@ let score = 0;
 
 // Load assets from the root assets folder
 const kasper = new Image();
-kasper.src = 'assets/kasperghostflappy.png';  // Correct path for the ghost in the root assets folder
+kasper.src = 'assets/kasperghostflappy.png';  // Ensure correct path for ghost image
 
 kasper.onload = function() {
     console.log("Kasper image loaded successfully");
@@ -26,7 +26,7 @@ kasper.onload = function() {
 
 const flapSound = new Audio('assets/flap.wav');
 const gameOverSound = new Audio('assets/gameover.wav');
-const bgMusic = new Audio('assets/background_compressed.wav');  // Compressed background sound from root assets
+const bgMusic = new Audio('assets/background_quieter.wav');  // Use quieter background music
 bgMusic.loop = true;
 
 let kasperX = canvas.width / 10;
@@ -40,14 +40,23 @@ let pipeWidth = canvas.width / 10;
 let pipeGap = canvas.height / 3;
 let pipeSpeed = 2;
 
+// Validate Kaspa address
+function isValidKaspaAddress(address) {
+    return address.startsWith('kaspa:');
+}
+
 // Handle wallet form submission without refreshing the page
 document.getElementById('walletForm').addEventListener('submit', function(event) {
     event.preventDefault();  // Prevent page refresh
     walletAddress = document.getElementById('walletAddress').value;
-    if (walletAddress) {
-        document.getElementById('walletForm').classList.add('hidden');
-        document.getElementById('playScreen').classList.remove('hidden');
+
+    if (!isValidKaspaAddress(walletAddress)) {
+        alert('Please enter a valid Kaspa address starting with "kaspa:"');
+        return;
     }
+
+    document.getElementById('walletForm').classList.add('hidden');
+    document.getElementById('playScreen').classList.remove('hidden');
 });
 
 // Show the "Start Game" button after wallet submission
@@ -90,6 +99,7 @@ function drawPipes() {
     }
 }
 
+// Generate pipes at intervals
 function generatePipes() {
     let top = Math.random() * (canvas.height / 2);
     let bottom = canvas.height - (top + pipeGap);
@@ -108,6 +118,7 @@ function startGame() {
     setInterval(generatePipes, 2500);
 }
 
+// Game loop
 function gameLoop() {
     if (!gameRunning) return;
 
@@ -124,6 +135,7 @@ function gameLoop() {
 
     drawPipes();
 
+    // Display and update score during gameplay
     document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
 
     requestAnimationFrame(gameLoop);
