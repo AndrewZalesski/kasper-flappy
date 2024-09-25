@@ -16,13 +16,17 @@ let gameRunning = false;
 let walletAddress = '';
 let score = 0;
 
-// Load assets
+// Load assets from the root assets folder
 const kasper = new Image();
-kasper.src = 'static/assets/kasperghostflappy.png';  // Ensure assets path is correct
+kasper.src = 'assets/kasperghostflappy.png';  // Correct path for the ghost in the root assets folder
 
-const flapSound = new Audio('static/assets/flap.wav');
-const gameOverSound = new Audio('static/assets/gameover.wav');
-const bgMusic = new Audio('static/assets/background.mp3');
+kasper.onload = function() {
+    console.log("Kasper image loaded successfully");
+};
+
+const flapSound = new Audio('assets/flap.wav');
+const gameOverSound = new Audio('assets/gameover.wav');
+const bgMusic = new Audio('assets/background_compressed.wav');  // Compressed background sound from root assets
 bgMusic.loop = true;
 
 let kasperX = canvas.width / 10;
@@ -114,6 +118,8 @@ function gameLoop() {
 
     velocity += gravity;
     kasperY += velocity;
+
+    // Draw Kasper ghost on the canvas
     ctx.drawImage(kasper, kasperX, kasperY, canvas.width / 10, canvas.height / 10);
 
     drawPipes();
