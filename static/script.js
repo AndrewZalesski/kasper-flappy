@@ -24,6 +24,23 @@ let pipes = [];
 let pipeWidth = 60;
 let pipeGap = 150;
 let pipeSpeed = 2;
+let leaderboardPage = 0;
+const leaderboardPageSize = 25;
+
+// Simulated high score data (for demonstration purposes)
+let highScores = [
+    { wallet: "kaspa:example1", score: 500 },
+    { wallet: "kaspa:example2", score: 450 },
+    // Additional dummy data for demo
+    { wallet: "kaspa:example3", score: 400 },
+    { wallet: "kaspa:example4", score: 350 },
+    { wallet: "kaspa:example5", score: 300 },
+    { wallet: "kaspa:example6", score: 250 },
+    { wallet: "kaspa:example7", score: 200 },
+    { wallet: "kaspa:example8", score: 150 },
+    { wallet: "kaspa:example9", score: 100 },
+    // Add enough to simulate multiple pages
+];
 
 // Preload Kasper image
 const kasper = new Image();
@@ -32,24 +49,20 @@ kasper.onload = function() {
     console.log("Kasper image loaded successfully");
 };
 
-// Wallet validation: Accept either 67 or 68 characters, trim any extra spaces
+// Wallet validation: Must start with "kaspa:"
 function isValidKaspaAddress(address) {
-    address = address.trim();  // Trim spaces and potential hidden characters
-    console.log("Wallet Address:", address);  // Log the address
-    console.log("Address Length:", address.length);  // Log the length
-    return address.length === 67 || address.length === 68;  // Check for 67 or 68 characters
+    return address.startsWith("kaspa:");
 }
 
 // Handle form submission for wallet
 document.getElementById('walletForm').addEventListener('submit', function(event) {
     event.preventDefault();
-    walletAddress = document.getElementById('walletAddress').value.trim();  // Trim spaces
+    walletAddress = document.getElementById('walletAddress').value.trim();
     if (!isValidKaspaAddress(walletAddress)) {
-        alert('Invalid wallet address. Must be 67 or 68 characters long.');
+        alert('Invalid wallet address. Must start with "kaspa:".');
         return;
     }
-    // Fetch high score (simulated)
-    highScore = 0;  // Reset high score to 0 for simplicity in this example
+    // Hide form, show play button
     document.getElementById('playScreen').classList.remove('hidden');
     document.getElementById('walletForm').classList.add('hidden');
 });
@@ -127,16 +140,55 @@ function drawGame() {
     ctx.fillText(`Score: ${score}`, 20, 50);
 }
 
-// End game, show final score, and reset
+// End game, show leaderboard and final score
 function endGame() {
     gameRunning = false;
     document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+    showLeaderboard();
     document.getElementById('playAgainButton').classList.remove('hidden');
 }
+
+// Show leaderboard, paginated to 25 entries at a time
+function showLeaderboard() {
+    const start = leaderboardPage * leaderboardPageSize;
+    const end = start + leaderboardPageSize;
+    const currentPageScores = highScores.slice(start, end);
+
+    const leaderboardElement = document.getElementById('leaderboard');
+    leaderboardElement.innerHTML = '';  // Clear previous content
+
+    currentPageScores.forEach(entry => {
+        const entryElement = document.createElement('div');
+        entryElement.textContent = `${entry.wallet}: ${entry.score}`;
+        leaderboardElement.appendChild(entryElement);
+    });
+
+    // Update navigation buttons
+    document.getElementById('prevButton').style.display = leaderboardPage > 0 ? 'inline' : 'none';
+    document.getElementById('nextButton').style.display = end < highScores.length ? 'inline' : 'none';
+}
+
+// Navigate to the previous page of the leaderboard
+document.getElementById('prevButton').addEventListener('click', function() {
+    if (leaderboardPage > 0) {
+        leaderboardPage--;
+        showLeaderboard();
+    }
+});
+
+// Navigate to the next page of the leaderboard
+document.getElementById('nextButton').addEventListener('click', function() {
+    if ((leaderboardPage + 1) * leaderboardPageSize < highScores.length) {
+        leaderboardPage++;
+        showLeaderboard();
+    }
+});
 
 // Restart game when "Play Again" is clicked
 document.getElementById('playAgainButton').addEventListener('click', function() {
     document.getElementById('playAgainButton').classList.add('hidden');
+    document.getElementById('leaderboard').innerHTML = '';  // Clear leaderboard
+    leaderboardPage = 0;  // Reset leaderboard page
     startGame();
 });
 
