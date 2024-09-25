@@ -19,7 +19,7 @@ let highScore = 0;  // Initial high score
 // Preload the Kasper ghost image before starting the game
 let kasperLoaded = false;
 const kasper = new Image();
-kasper.src = 'assets/kasperghostflappy.png';  // Ensure correct path for ghost image
+kasper.src = 'assets/kasperghostflappy_optimized.png';  // Ensure correct path for ghost image
 kasper.onload = function() {
     kasperLoaded = true;
     console.log("Kasper image loaded successfully");

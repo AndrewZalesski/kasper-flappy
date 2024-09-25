@@ -35,7 +35,7 @@ def submit_score():
     wallet_address = data.get('wallet_address')
     score = data.get('score')
 
-    if wallet_address and score:
+    if wallet_address and score and wallet_address.startswith('kaspa:'):
         conn = get_db_connection()
         conn.execute('INSERT INTO leaderboard (wallet_address, score) VALUES (?, ?)',
                      (wallet_address, score))
