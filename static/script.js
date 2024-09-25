@@ -32,10 +32,9 @@ kasper.onload = function() {
     console.log("Kasper image loaded successfully");
 };
 
-// Kaspa wallet validation (simple regex for kaspa address format)
+// Simplified Kaspa wallet validation: Only checks for total character count (65 including 'kaspa:')
 function isValidKaspaAddress(address) {
-    const regex = /^kaspa:[a-z0-9]{59}$/i;
-    return regex.test(address);
+    return address.length === 65 && address.startsWith("kaspa:");
 }
 
 // Handle form submission for wallet
