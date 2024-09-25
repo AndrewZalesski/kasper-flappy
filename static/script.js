@@ -236,6 +236,16 @@ let highScores = [
     { wallet: "kaspa:example1", score: 500 },
     { wallet: "kaspa:example2", score: 450 },
     { wallet: "kaspa:example3", score: 400 },
+    { wallet: "kaspa:example4", score: 350 },
+    { wallet: "kaspa:example5", score: 300 },
+    { wallet: "kaspa:example6", score: 250 },
+    { wallet: "kaspa:example7", score: 200 },
+    { wallet: "kaspa:example8", score: 150 },
+    { wallet: "kaspa:example9", score: 100 }
+];
+    { wallet: "kaspa:example1", score: 500 },
+    { wallet: "kaspa:example2", score: 450 },
+    { wallet: "kaspa:example3", score: 400 },
     // Additional dummy data for demo
     // Fill more to test pagination if needed
 ];
